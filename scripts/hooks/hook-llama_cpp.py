@@ -17,11 +17,4 @@ datas = collect_data_files('llama_cpp')
 
 # Append the additional .dll or .so file
 dll_path = os.path.join(package_path, 'llama_cpp', 'lib', 'llama.dll')
-if os.path.exists(dll_path):
-    datas.append((dll_path, 'llama_cpp'))
-
-# Ensure the directory containing the .dll file is included
-binaries = [(dll_path, 'llama_cpp')]
-
-# Assign the collected data files and binaries
-datas += binaries
+datas.append((dll_path, 'llama_cpp'))
