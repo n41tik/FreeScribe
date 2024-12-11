@@ -22,6 +22,12 @@ jobs:
           architecture: "x64"
 
       # Create CUDA-enabled executable
+      - name: Install CUDA
+        run: |
+          pip install --upgrade setuptools pip wheel
+          pip install nvidia-pyindex
+          pip install nvidia-cuda-runtime-cu12
+
       - name: Install CUDA-enabled llama_cpp
         run: |
           pip install --index-url https://abetlen.github.io/llama-cpp-python/whl/cu121 --extra-index-url https://pypi.org/simple llama-cpp-python==v0.2.90
