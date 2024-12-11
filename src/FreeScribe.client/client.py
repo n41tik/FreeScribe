@@ -38,13 +38,19 @@ from UI.LoadingWindow import LoadingWindow
 from UI.Widgets.MicrophoneSelector import MicrophoneState
 from Model import  ModelManager
 from utils.ip_utils import is_private_ip
-from utils.file_utils import get_file_path, get_resource_path
+from utils.file_utils import get_file_path, get_resource_path, check_if_file_exists
 import ctypes
 import sys
 from UI.DebugWindow import DualOutput
 import traceback
 import sys
 from utils.utils import window_has_running_instance, bring_to_front, close_mutex
+
+llama_file_path = get_resource_path('_internal\\llama_cpp\\lib\\llama.dll')
+
+if check_if_file_exists(llama_file_path):
+    ctypes.windll.kernel32.SetDllDirectoryW(None)
+    ctypes.CDLL(llama_file_path)
 
 dual = DualOutput()
 sys.stdout = dual

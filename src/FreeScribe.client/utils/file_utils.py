@@ -58,3 +58,13 @@ def _get_user_data_dir() -> str:
             path = os.path.expanduser("~/.local/share") 
         return self._append_app_name_and_version(path)
 
+def check_if_file_exists(file_path: str) -> bool:
+    """
+    Check if the file exists.
+
+    :param file_path: The path to the file.
+    :type file_path: str
+    :return: True if the file exists, False otherwise.
+    :rtype: bool
+    """
+    return os.path.exists(file_path)
