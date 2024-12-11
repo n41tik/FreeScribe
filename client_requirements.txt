@@ -1,4 +1,4 @@
---index-url https://abetlen.github.io/llama-cpp-python/whl/cpu --extra-index-url https://pypi.org/simple
+--index-url https://abetlen.github.io/llama-cpp-python/whl/cpu --extra-index-url https://pypi.org/simple --extra-index-url https:∕∕pypi.ngc.nvidia.com
 altgraph==0.17.4
 annotated-types==0.7.0
 anyio==4.6.0
@@ -33,7 +33,6 @@ nltk==3.9.1
 numba==0.60.0
 numpy==1.26.4
 nvidia-cuda-runtime-cu12==12.6.77
-nvidia-pyindex==1.0.9
 openai==1.50.2
 openai-whisper==20240927
 packaging==24.1
