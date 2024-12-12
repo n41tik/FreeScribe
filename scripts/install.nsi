@@ -371,7 +371,7 @@ Function CheckCudaAvailability
 
     FoundVersionLine:
         StrCpy $R1 $R2 ; Save the version line
-    Goto LoopPop
+        Goto EndLoopPop
 
     EndLoopPop:
     StrCmp $R1 "" ErrorParsing
