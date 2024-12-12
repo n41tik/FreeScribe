@@ -354,8 +354,8 @@ Function CheckCudaAvailability
     Pop $0 ; Return value
 
     ${If} $0 != 0
-        MessageBox MB_OK "CUDA is not available. Please ensure 'nvcc' is installed and added to the PATH. Download it from: https://developer.nvidia.com/cuda-downloads"
-        Abort
+        MessageBox MB_OK "CUDA is not available. Please ensure 'nvcc' is installed and added to the PATH and restart the installer. Download it from: https://developer.nvidia.com/cuda-downloads"
+        Quit
     ${EndIf}
 FunctionEnd
 
