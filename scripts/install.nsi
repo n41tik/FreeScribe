@@ -22,7 +22,6 @@ VIAddVersionKey "FileDescription" "FreeScribe Installer"
 ; Define the logo image
 !define MUI_ICON ./assets/logo.ico
 !define MIN_CUDA_DRIVER_VERSION 527.41 ; The nvidia graphic driver that is compatiable with Cuda 12.1
-!define MIN_CUDA_VERSION 12.1 ; The minimum version of Cuda required
 
 ; Variables for checkboxes
 Var /GLOBAL CPU_RADIO
@@ -56,47 +55,6 @@ Function Check_For_Old_Version_In_App_Data
             MessageBox MB_OK "FreeScribe has been successfully uninstalled."
     OldVersionDoesNotExist:
 FunctionEnd
-
-Var STR_HAYSTACK
-Var STR_NEEDLE
-Var STR_CONTAINS_VAR_1
-Var STR_CONTAINS_VAR_2
-Var STR_CONTAINS_VAR_3
-Var STR_CONTAINS_VAR_4
-Var STR_RETURN_VAR
-
-Function StrContains
-  Exch $STR_NEEDLE
-  Exch 1
-  Exch $STR_HAYSTACK
-  ; Uncomment to debug
-  ;MessageBox MB_OK 'STR_NEEDLE = $STR_NEEDLE STR_HAYSTACK = $STR_HAYSTACK '
-    StrCpy $STR_RETURN_VAR ""
-    StrCpy $STR_CONTAINS_VAR_1 -1
-    StrLen $STR_CONTAINS_VAR_2 $STR_NEEDLE
-    StrLen $STR_CONTAINS_VAR_4 $STR_HAYSTACK
-    loop:
-      IntOp $STR_CONTAINS_VAR_1 $STR_CONTAINS_VAR_1 + 1
-      StrCpy $STR_CONTAINS_VAR_3 $STR_HAYSTACK $STR_CONTAINS_VAR_2 $STR_CONTAINS_VAR_1
-      StrCmp $STR_CONTAINS_VAR_3 $STR_NEEDLE found
-      StrCmp $STR_CONTAINS_VAR_1 $STR_CONTAINS_VAR_4 done
-      Goto loop
-    found:
-      StrCpy $STR_RETURN_VAR $STR_NEEDLE
-      Goto done
-    done:
-   Pop $STR_NEEDLE ;Prevent "invalid opcode" errors and keep the
-   Exch $STR_RETURN_VAR
-FunctionEnd
-
-!macro _StrContainsConstructor OUT NEEDLE HAYSTACK
-  Push `${HAYSTACK}`
-  Push `${NEEDLE}`
-  Call StrContains
-  Pop `${OUT}`
-!macroend
-
-!define StrContains '!insertmacro "_StrContainsConstructor"'
 
 
 ; Function to create a custom page with CPU/NVIDIA options
@@ -396,52 +354,10 @@ Function CheckCudaAvailability
     Pop $0 ; Return value
 
     ${If} $0 != 0
-        MessageBox MB_OK "CUDA is not available. Please ensure 'nvcc' is installed and in the PATH. Download it from: https://developer.nvidia.com/cuda-downloads"
+        MessageBox MB_OK "CUDA is not available. Please ensure 'nvcc' is installed and added to the PATH. Download it from: https://developer.nvidia.com/cuda-downloads"
         Abort
     ${EndIf}
-
-    ; Dynamically process the stack output to find the version line
-    StrCpy $R0 "" ; Clear accumulator for output
-    StrCpy $R1 "" ; Line containing the version
-    LoopPop:
-        Pop $R2
-        StrCmp $R2 "" EndLoopPop
-        ${StrContains} $R2 "release " $R3
-        StrCmp $R3 "-1" 0 FoundVersionLine
-        Goto LoopPop
-
-    FoundVersionLine:
-        StrCpy $R1 $R2 ; Save the version line
-        Goto EndLoopPop
-
-    EndLoopPop:
-    StrCmp $R1 "" ErrorParsing
-
-    ; Extract the version number from the version line
-    ${WordFind} $R1 "release " "+1" $R4
-    ${WordFind} $R4 "," "-1" $R5 ; Extract major.minor version (e.g., 12.1)
-
-    ; Validate the extracted version
-    StrCmp $R5 "" ErrorParsing
-
-    ; Compare the extracted version with the minimum required version
-    Push $R5
-    Push ${MIN_CUDA_VERSION}
-    Call CompareVersions
-    Pop $R6
-
-    ${If} $R6 == 1
-        MessageBox MB_OK "CUDA version ($R5) is less than the required version (${MIN_CUDA_VERSION}). Please update CUDA and restart the installer."
-        Abort
-    ${EndIf}
-
-    Return
-
-ErrorParsing:
-    MessageBox MB_OK "Failed to parse CUDA version. Ensure 'nvcc --version' outputs the expected format."
-    Abort
 FunctionEnd
-
 
 Function CheckNvidiaDrivers
     Var /GLOBAL DriverVersion
